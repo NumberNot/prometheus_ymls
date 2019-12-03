@@ -1,0 +1,104 @@
+global:
+  scrape_interval:     60s
+  evaluation_interval: 60s
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+       - localhost:9093
+
+rule_files:
+  - 'alerts_general.yml'
+  - 'alerts/*.yml'
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+    static_configs:
+    - targets: ['localhost:9090']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        regex: "localhost:9090"
+        replacement: "prometheus"
+
+  - job_name: 'node'
+    file_sd_configs:
+      - files:
+        - targets.json
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        regex: "server.domain.ru:9182"
+        replacement: "anothernameserver.domain.no"
+      - source_labels: [__address__]
+        target_label: instance
+        regex: "server.domain.ru:9182"
+        replacement: "anothernameserver1.domain.no"
+
+  - job_name: gitlab-rails
+    metrics_path: "/-/metrics"
+    static_configs:
+    - targets:
+      - gitlab.domain.no:80
+
+
+  - job_name: 'cadvisor'
+    static_configs:
+    - targets:
+      - '10.10.0.43:9080'
+
+  - job_name: 'snmp'
+    file_sd_configs:
+      - files:
+        - targets_snmp.json
+    metrics_path: /snmp
+    params:
+      module: [if_mib, synology]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.10.0.43:9116  # The SNMP exporter's real hostname:port.
+
+  - job_name: 'snmp_remote'
+    scrape_interval:     10m
+    file_sd_configs:
+      - files:
+        - targets_snmp_remote.json
+    metrics_path: /snmp
+    params:
+      module: [if_mib]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance   
+      - target_label: __address__
+        replacement: 10.10.0.43:9116  # The SNMP exporter's real hostname:port.
+
+
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    file_sd_configs:
+      - files:
+        - targets_blackbox.json
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.10.0.43:9115
+      - source_labels: [__address__]
+        target_label: instance
+        regex: "http://10.10.3.100"
+        replacement: "name"
