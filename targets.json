@@ -1,0 +1,60 @@
+[
+  {
+    "targets": [ "server1.domain.no:9100", "server1.domain.no:9100", "server1.domain.no:9100" ],
+    "labels": {
+      "job": "node",
+      "env": "prod",
+      "group": "linux_servers"
+    }
+  },
+  {
+    "targets": [ "server1.domain.no:9100" ],
+    "labels": {
+      "job": "node",
+      "env": "remote",
+      "group": "remote"
+    }
+  },
+  {
+    "targets": [ "server1.domain.no:9182", "server1.domain.no:9182", "server1.domain.no:9182" ],
+    "labels": {
+      "job": "node",
+      "env": "prod",
+      "group": "windows_servers"
+    }
+  },
+  {  
+    "targets": [ "server1.domain.no:9182", "server1.domain.no:9182", "server1.domain.no:9182", "server1.domain.no:9182" ],
+    "labels": {
+      "job": "node",
+      "env": "nesk",
+      "group": "windows_servers_remote"
+    }
+  },
+  {
+    "targets": [ "server1.domain.no:9182", "server1.domain.no:9182" ],
+    "labels": {
+      "job": "node",
+      "env": "prod",
+      "group": "windows_remote"
+    }
+  },
+  {
+    "targets": [ "10.10.0.37:9182", "10.10.0.38:9182", "10.10.0.39:9182", "10.10.0.40:9182" ],
+    "labels": {
+      "job": "node",
+      "env": "queue",
+      "group": "queue"
+
+    }
+  },
+  {
+    "targets": [ "server1.domain.no:9182", "server1.domain.no:9182" ],
+    "labels": {
+      "job": "node",
+      "env": "windows_service",
+      "group": "windows_service"
+
+    }
+  }
+]
