@@ -1,0 +1,53 @@
+groups:
+
+- name: general.rules
+  rules:
+  - alert: Exporter Down
+    expr: (up{job!="domain"}) == 0
+    for: 5m
+    labels:
+      alertname: instancedown
+      severity: critical
+    annotations:
+      identifier: '{{ $labels.instance }}'
+      summary: "Exporter down (instance {{ $labels.instance }})"
+      description: "Prometheus exporter down\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+  - alert: Black Box Exporter Down
+    expr: (probe_success{job!="domain"}) == 0
+    for: 5m
+    labels:
+      alertname: blackboxinstancedown
+      severity: critical
+    annotations:
+      identifier: '{{ $labels.instance }}'
+      summary: "Exporter down (instance {{ $labels.instance }})"
+      description: "Prometheus exporter down\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+  - alert: Prometheus Configuration Reload
+    expr: prometheus_config_last_reload_successful != 1
+    for: 5m
+    labels:
+      severity: error
+    annotations:
+      summary: "Prometheus configuration reload (instance {{ $labels.instance }})"
+      description: "Prometheus configuration reload error\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+  - alert: AlertmanagerConfigurationReload
+    expr: alertmanager_config_last_reload_successful != 1
+    for: 5m
+    labels:
+      severity: error
+    annotations:
+      summary: "AlertManager configuration reload (instance {{ $labels.instance }})"
+      description: "AlertManager configuration reload error\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+  - alert: The Service Name Down
+    expr: wmi_service_state{instance="server.domain.no:9182",job="node",name="name",state="running"} == 0
+    for: 5m
+    labels:
+      alertname: servicedown
+      severity: warning
+    annotations:
+      summary: "Service {{ $labels.exported_name }} down"
+      description: "Service {{ $labels.exported_name }} on instance {{ $labels.instance }} has been down for more than 3 minutes."
