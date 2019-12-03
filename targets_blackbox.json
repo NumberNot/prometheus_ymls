@@ -1,0 +1,10 @@
+[
+  {
+    "targets": [ "http://10.10.3.100" ],
+    "labels": {
+      "job": "node",
+      "env": "prod",
+      "group": "windows_remote"
+    }
+  }
+]
