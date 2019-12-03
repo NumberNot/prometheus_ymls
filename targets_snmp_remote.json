@@ -1,0 +1,10 @@
+[
+  {
+    "targets": [ "10.10.4.100" ],
+    "labels": {
+      "job": "node",
+      "env": "prod",
+      "group": "infrastructure_remote"
+    }
+  }
+]
